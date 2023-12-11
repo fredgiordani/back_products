@@ -1,13 +1,16 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
+import { ProductModule } from './products/product.module';
+import { ProductService } from './products/product.service'; // Importez votre service ProductService
+import { PrismaService } from './prisma.service';
 import { AppService } from './app.service';
-import { ProductController } from './products/controller'; // Supprimez les crochets
-import { ProductModule } from './products/product.module'; // Supprimez les crochets
-import { ProductService } from './products/product.service';
 
 @Module({
   imports: [ProductModule],
-  controllers: [AppController, ProductController], // Supprimez les crochets
-  providers: [AppService, ProductService],
+  controllers: [AppController],
+  providers: [
+    ProductService, PrismaService,AppService // Ajoutez votre service ici
+    // Autres services le cas échéant
+  ],
 })
 export class AppModule {}

@@ -1,39 +1,32 @@
-// product.service.ts
 import { Injectable } from '@nestjs/common';
-import { Product } from './product.model';
-import { v4 as uuidv4 } from 'uuid';
+import { PrismaService } from 'src/prisma.service'; 
 
 @Injectable()
 export class ProductService {
-  private products: Product[] = [];
+  constructor(private readonly prismaService: PrismaService) {}
 
-  findAll(): Product[] {
-    return this.products;
+  async findAll() {
+    return this.prismaService.findAllProducts();
   }
 
-  findOne(id: string): Product {
-    return this.products.find(product => product.id === id);
+  async findOne(id: number) {
+    return this.prismaService.findProductById(id);
   }
 
-  create(product: Product): Product {
-    // Générez un nouvel ID pour le produit en fonction de la longueur du tableau + 1
-    // console.log(product)
-    // product.id = this.products.length + 1;
-    // console.log(product)
-
-
-    // Générez un nouvel ID unique à l'aide de uuidv4()
-    product.id = uuidv4();
+  async createProduct(data: any) {
+    console.log(data);
     
-    
-    // Ajoutez le produit à la liste
-    this.products.push(product);
-    
-    return product;
+    return this.prismaService.createProduct({
+      name: data.name,
+      price: data.price,
+      description: data.description,
+      color: data.color
+      // Ajoutez d'autres champs du modèle de produit au besoin
+    });
+      
   }
 
-  delete(id: string): void {
-    // Utilisez `filter` pour supprimer l'élément du tableau
-    this.products = this.products.filter(product => product.id !== id);
+  async delete(id: number) {
+    return this.prismaService.deleteProduct(id);
   }
 }

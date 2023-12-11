@@ -1,0 +1,19 @@
+// fichier: schema.prisma
+
+datasource db {
+  provider = "sqlite" // Utilisation de SQLite comme fournisseur de base de données
+  url      = env("DATABASE_URL") // Utilisation de la constante DATABASE_URL du fichier .env
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Products {
+  id          Int    @id @default(autoincrement()) 
+  name        String
+  description String
+  price       Float
+  color       String
+}
+

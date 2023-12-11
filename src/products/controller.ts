@@ -1,33 +1,40 @@
-import { Controller, Get, Post, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, Body, NotFoundException, UseInterceptors } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { Product } from './product.model';
+import { Products } from '.prisma/client';
+import { HttpErrorInterceptor } from './http-error.interceptor'; // Créez un intercepteur pour gérer les erreurs HTTP globalement
 
+@UseInterceptors(HttpErrorInterceptor) // Utilisez un intercepteur pour gérer les erreurs HTTP
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Get()
-  findAll(): Product[] {
-    console.log("ok");
-    
+  async findAll(): Promise<Products[]> {
     return this.productService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Product {
-    console.log(this.productService.findOne(id));
-    return this.productService.findOne(id);
+async findOne(@Param('id') id: string): Promise<Products> {
+  const productId = Number(id); // Convertir la chaîne de caractères 'id' en nombre
+  const product = await this.productService.findOne(productId);
+  if (!product) {
+    throw new NotFoundException(`Product with ID ${id} not found`);
   }
+  return product;
+}
+
 
   @Post()
-  create(@Body() product: Product): Product {
-    console.log("product", product);
-  
-    return this.productService.create(product);
+  async create(@Body() productData: Partial<Products>): Promise<Products> {
+    console.log("productData====>",productData);
+    
+    return this.productService.createProduct(productData);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): void {
-    this.productService.delete(id);
-  }
+async remove(@Param('id') id: string): Promise<void> {
+  const productId = Number(id); // Convertir la chaîne de caractères 'id' en nombre
+  await this.productService.delete(productId);
+}
+
 }
