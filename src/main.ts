@@ -15,18 +15,23 @@ async function bootstrap() {
     console.error('Erreur de connexion à la base de données:', error);
   }
 
+  // Configuration de CORS
+  app.enableCors({
+    origin: 'http://localhost:3000', // Remplacez par l'URL de votre application frontend
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   try {
-    await app.listen(5000)
-    console.log("ecoute sur le port 5000");
-    
+    await app.listen(5000);
+    console.log('Écoute sur le port 5000');
   } catch (error) {
-    console.error("err",error);
+    console.error('Erreur au démarrage du serveur:', error);
   }
-  ;
-  
-  
 }
+
 bootstrap();
+
 
 
 

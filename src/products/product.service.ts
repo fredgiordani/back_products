@@ -15,10 +15,11 @@ export class ProductService {
 
   async createProduct(data: any) {
     console.log(data);
+    const price = parseFloat(data.price);
     
     return this.prismaService.createProduct({
       name: data.name,
-      price: data.price,
+      price: price,
       description: data.description,
       color: data.color
       // Ajoutez d'autres champs du modèle de produit au besoin
